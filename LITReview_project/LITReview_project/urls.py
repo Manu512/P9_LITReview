@@ -31,5 +31,9 @@ if settings.DEBUG:
     ] + urlpatterns
 
 urlpatterns += [
-        path('', RedirectView.as_view(url='/review/', permanent=True)),
+        path('', RedirectView.as_view(url='/login/', permanent=True)),
+]
+
+urlpatterns += [
+        path('', include('django.contrib.auth.urls')),
 ]

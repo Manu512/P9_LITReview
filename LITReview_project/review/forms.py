@@ -3,5 +3,5 @@ from .models import UserFollows
 from django.contrib.auth.models import User
 
 
-class NewUser(ModelForm):
+class LoginUser(ModelForm):
     pass
