@@ -17,11 +17,15 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
-
+from django.contrib.auth import views as auth_views
+from review import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('review/', include('review.urls')),
+    path('login/', views.Login.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('', RedirectView.as_view(url='login/', permanent=True), name="go-to-review"),
 ]
 
 if settings.DEBUG:
@@ -29,11 +33,3 @@ if settings.DEBUG:
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
-
-urlpatterns += [
-        path('', RedirectView.as_view(url='/login/', permanent=True)),
-]
-
-urlpatterns += [
-        path('', include('django.contrib.auth.urls')),
-]

@@ -1,0 +1,29 @@
+{% extends "review/base.html" %}
+
+{% block content %}
+    <div class="">
+    <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        <div class="fw-bold display-6 text-center">Inscrivez-vous</div>
+        <div class="container text-center col-auto">
+                     <p>{{ form.username }}</p>
+                     <p>{{ form.password1 }}</p>
+                     <p>{{ form.password2 }}</p>
+        <div class="align-content-end float-end">
+            <a class="btn btn-secondary" href="{% url 'login' %}">Retourner<a/>
+            <input class="btn btn-primary" type="submit" value="S'inscrire"/>
+            <input type="hidden" name="next" value="{{ next }}"/>
+        </div></div>
+
+                {% if form.errors %}
+                    <div class="container ">
+                {% for value in form.errors.values %}
+                         {{ value }}
+                {% endfor %}
+                    </div>
+                {% endif %}
+
+    </form>
+
+    </div>
+{% endblock %}
