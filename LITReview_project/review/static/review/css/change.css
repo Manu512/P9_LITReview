@@ -17,4 +17,33 @@ header {
   margin-right: 80px;
 }
 
+.container_flux {
+  content: "";
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: #0a53be;
+  background: antiquewhite;
+  opacity: 0.9;
+}
+
+.ticket_container {
+  margin: 10px 10px 0 10px;
+}
+.ticket_img {
+  margin-left: 10px;
+}
+
+.time_right {
+  float: right;
+  margin-right: 20px;
+}
+
+.bordure {
+  padding: 5px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #1a1e21;
+  box-shadow: 3px 3px 2px gray;
+}
+
 /*# sourceMappingURL=change.css.map */
