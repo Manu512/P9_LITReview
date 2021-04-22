@@ -24,5 +24,15 @@
 {% endblock %}
 
 {% block content %}
+        <form method="post">
+    {% csrf_token %}
+    <div class="container_flux">
+        <div class="text-center">Créer un ticket</div>
+        <div class="container bordure">
+           {{ form.as_p }}
+            <div class="input_right"><input class=" btn btn-success" type="submit" value="Envoyer" /></div>
+        </div>
+    </div>
+        </form>
 
 {% endblock %}

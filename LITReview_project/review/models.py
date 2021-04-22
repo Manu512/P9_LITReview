@@ -2,33 +2,43 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
 
-
-class Ticket(models.Model):
-    title = models.CharField('Titre', max_length=128)
-    description = models.TextField(max_length=2048, blank=True)
+class UserModel(models.Model):
     user = models.ForeignKey(
             to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class TimeStampModel(UserModel):
     time_created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        abstract = True
 
-class Review(models.Model):
+
+class Ticket(TimeStampModel):
+    title = models.CharField('Titre', max_length=128)
+    description = models.TextField(max_length=2048, blank=True)
+    image = models.ImageField(upload_to='review/img', null=True, blank=True)
+    def __str__(self):
+        return "{} by {}".format(self.title, self.user)
+
+
+class Review(TimeStampModel):
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField(
-            validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     # validates that rating must be between 0 and 5
-    user = models.ForeignKey(
-            to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     headline = models.CharField(max_length=128)
     body = models.CharField(max_length=8192, blank=True)
 
-    time_created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return "{} - {}".format(self.ticket.title, self.headline)
 
 
-class UserFollows(models.Model):
+
+class UserFollows(UserModel):
     # Your UserFollows model definition goes here
-    user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     followed_user = models.ForeignKey(
             to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
             related_name='followed_by')

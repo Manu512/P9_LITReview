@@ -1,28 +1,47 @@
 {% extends 'review/base.html' %}
-
+Crée une critique
 {% block title %}{{ title }}{% endblock %}
 
 {% block navbar %}
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div id="navbarSupportedContent ">
-                <ul class="navbar-nav mr-auto ">
-                  <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'index'%}">Flux</a>
-                  </li>
-                  <li class="nav-item">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div id="navbarSupportedContent ">
+            <ul class="navbar-nav mr-auto ">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}">Flux</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#">Posts</a>
-                  </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Abonnements</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout'%}">Se déconnecter</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Abonnements</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 {% endblock %}
 
 {% block content %}
+    <form method="post" action="{% url 'review' %}">
+        {% csrf_token %}
+        <div class="container_flux">
+            <div class="text-center">Créer une critique</div>
+            <div class="container bordure">
+                <div class="container">Livre / Article</div>
+                {{ form_Ticket }}
+                {#            {% include 'review/snippet/form_review.html' %}#}
+            </div>
+            <div class="container bordure">
+                <div class="container">Critique</div>
+                {{ form_Review }}
+                {#            {% include 'review/snippet/form_review.html' %}#}
+            <div class="input_right"><input class=" btn btn-success" type="submit" value="Envoyer"/></div>
+            </div>
+        </div>
+
+    </form>
+
 
 {% endblock %}

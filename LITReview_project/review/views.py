@@ -1,12 +1,12 @@
 from itertools import chain
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 
 from django.db.models import CharField, Value
-from .forms import Register, Connect
+from .forms import Register, Connect, TicketForm, ReviewForm
 from .models import Ticket, Review
 
 
@@ -30,11 +30,11 @@ def get_users_viewable_tickets(user):
 
 @login_required
 def index(request):
-    reviews = get_users_viewable_reviews(request.user)
+    reviews = Review.objects.all() # get_users_viewable_reviews()
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = get_users_viewable_tickets(request.user)
+    tickets = Ticket.objects.all() # get_users_viewable_tickets()
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
@@ -49,16 +49,56 @@ def index(request):
 
     return render(request, 'review/index.html', context)
 
+def validate_form(form, request):
+    r = False
+    if form.is_valid:
+        prepare_save = form.save(commit=False)
+        prepare_save.user  = request.user
+        prepare_save.save()
+        r = True
+
+    return r
 
 @login_required
-def ticket(request):
-    context = {'title': ' - Demander une critique'}
+def ticket(request, ticket_id=None):
+    if ticket_id and request.method == 'GET':
+        res =  get_object_or_404(Ticket, id=ticket_id)
+        form = TicketForm(res)
+    elif request.method == 'POST':
+        form = TicketForm(request.POST)
+
+        if validate_form(form,request):
+            return redirect(index)
+
+    else:
+        form = TicketForm()
+
+    context = {'title': ' - Demander une critique',
+               'form': form
+               }
     return render(request, 'review/ticket.html', context)
 
 
 @login_required
-def review(request):
-    context = {'title': ' - Créer une critique'}
+def review(request, review_id=None):
+    if review_id and request.method == 'GET':
+        res =  get_object_or_404(Review, id=review_id)
+
+    elif request.method == 'POST':
+        form_Review = ReviewForm(request.POST)
+        form_Ticket = TicketForm(request.POST)
+
+        if validate_form(form_Ticket, request):
+            if validate_form(form_Review, request):
+                return redirect(index)
+    else:
+        form_Review = ReviewForm()
+        form_Ticket = TicketForm()
+
+    context = {'title': ' - Créer une critique',
+               'form_Review': form_Review,
+               'form_Ticket': form_Ticket
+               }
     return render(request, 'review/review.html', context)
 
 

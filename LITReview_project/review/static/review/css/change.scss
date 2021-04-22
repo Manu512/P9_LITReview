@@ -3,10 +3,33 @@ header {
 
 }
 
+label {
+  display: block;
+}
+
+textarea {
+  text-align: left;
+}
+
+
+
+#id_headline, #id_body, #id_title, #id_description {
+  width: 100%;
+}
+
+
+#id_title {
+  text-align: center;
+}
+
 #filigrame {
   background: no-repeat center url("https://www.erbree.fr/wp-content/uploads/2017/11/Bo%C3%AEte-%C3%A0-livre-Image-1024x514.png") ;
   background-attachment: fixed;
   background-size: initial;
+}
+
+.nav-link-active {
+  font-weight: bold;
 }
 
 .col-auto{
@@ -14,17 +37,24 @@ header {
 }
 
 .input_right{
-  float: right;
-  margin-right: 80px;
+  display: block;
+  //float: right;
+  margin-right: 1em;
+  direction: rtl;
 }
 
 .container{
+  max-width: 1440px;
+
+  margin: 0 auto;
+
   &_flux{
+    display: block;
     content: "";
     margin-top: 10px;
     margin-bottom: 10px;
     box-shadow: #0a53be;
-    background: antiquewhite;
+    background: white;
     opacity: 0.9;
   }
 }
@@ -64,3 +94,17 @@ header {
     border-color: #1a1e21;
     box-shadow: 3px 3px 2px gray;
   }
+
+ul#id_rating {
+  list-style-type: none;
+
+  >li {
+    display: inline-block;
+    text-align: left;
+    margin-left: 2px;
+    padding-left: 5rem;
+  }
+  >li:first-child {
+    padding-left: 0;
+  }
+}

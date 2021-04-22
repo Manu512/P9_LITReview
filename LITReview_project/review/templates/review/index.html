@@ -8,7 +8,7 @@
             <div id="navbarSupportedContent ">
                 <ul class="navbar-nav mr-auto ">
                   <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'index'%}">Flux</a>
+                    <a class="nav-link nav-link-active" href="{% url 'index'%}">Flux</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Posts</a>
@@ -30,7 +30,7 @@
                 <h2 class="text-center ">Bienvenue {{ user.username }}.</h2>
         </div>
         <div class="row align-items-start">
-            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'ticket'%}">Demander un
+            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'ticket'%}">Demander une
                 critique</a></div>
             <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'review'%}">Créer une critique</a></div>
         </div>
@@ -38,9 +38,9 @@
 
         {% for post in posts %}
             {% if post.content_type == 'TICKET' %}
-                {% include 'ticket_snippet.html' %}
+                {% include 'review/snippet/ticket_snippet.html' %}
             {%  elif post.content_type == 'REVIEW' %}
-                {% include 'review_snippet.html' %}
+                {% include 'review/snippet/review_snippet.html' %}
             {% endif %}
         {% endfor %}
 
