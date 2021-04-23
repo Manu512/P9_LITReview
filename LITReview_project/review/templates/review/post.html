@@ -1,5 +1,6 @@
 {% extends 'review/base.html' %}
 
+
 {% block title %}{{ title }}{% endblock %}
 
 {% block navbar %}
@@ -10,7 +11,7 @@
                     <a class="nav-link" href="{% url 'index'%}">Flux</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'post'%}">Posts</a>
+                    <a class="nav-link nav-link-active" href="{% url 'post'%}">Posts</a>
                   </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'abonnement'%}">Abonnements</a>
@@ -24,15 +25,21 @@
 {% endblock %}
 
 {% block content %}
-        <form method="post">
-    {% csrf_token %}
-    <div class="container_flux">
-        <div class="text-center">Créer un ticket</div>
-        <div class="container bordure">
-           {{ form.as_p }}
-            <div class="input_right"><input class=" btn btn-success" type="submit" value="Envoyer" /></div>
+    <div class="container">
+        <div class="row align-items-start">
+                <h2 class="text-center ">Bienvenue {{ user.username }}.</h2>
         </div>
+        <div class="row align-items-start">
+            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'ticket'%}">Demander une
+                critique</a></div>
+            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'review'%}">Créer une critique</a></div>
+        </div>
+        {% for post in posts %}
+            {% if post.content_type == 'TICKET' %}
+                {% include 'review/snippet/ticket_snippet.html' %}
+            {%  elif post.content_type == 'REVIEW' %}
+                {% include 'review/snippet/review_snippet.html' %}
+            {% endif %}
+        {% endfor %}
     </div>
-        </form>
-
 {% endblock %}

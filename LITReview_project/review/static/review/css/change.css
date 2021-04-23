@@ -10,6 +10,14 @@ textarea {
   text-align: left;
 }
 
+.center {
+  text-align: center;
+}
+
+#id_followed_user {
+  margin-top: 15px;
+}
+
 #id_headline, #id_body, #id_title, #id_description {
   width: 100%;
 }
@@ -36,6 +44,10 @@ textarea {
   display: block;
   margin-right: 1em;
   direction: rtl;
+}
+.input_right-right {
+  text-align: right;
+  margin-right: 6em;
 }
 
 .container {
@@ -69,7 +81,7 @@ textarea {
   border-style: solid;
   border-width: 2px;
   border-color: #1a1e21;
-  box-shadow: 3px 3px 2px gray;
+  box-shadow: 3px 0px 2px gray;
 }
 
 ul#id_rating {

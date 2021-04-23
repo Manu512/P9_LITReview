@@ -4,7 +4,7 @@ from django.forms.models import ModelForm
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .models import Review, Ticket
+from .models import Review, Ticket, UserFollows
 
 
 class Register(UserCreationForm):
@@ -61,3 +61,11 @@ class ReviewForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['rating'].widget.attrs.update({'class': 'special'})
+
+class FollowerForm(ModelForm):
+    class Meta:
+        model = UserFollows
+        fields = ["followed_user"]
+        labels = {
+                "followed_user": "Nom d'utilisateurs",
+        }

@@ -6,8 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView
 
 from django.db.models import CharField, Value
-from .forms import Register, Connect, TicketForm, ReviewForm
-from .models import Ticket, Review
+from .forms import Register, Connect, TicketForm, ReviewForm, FollowerForm
+from .models import Ticket, Review, UserFollows
 
 
 # Create your views here.
@@ -118,3 +118,44 @@ def register(request):
             'form': form
     }
     return render(request, 'review/register.html', context)
+
+@login_required
+def personal_post(request):
+    reviews = get_users_viewable_reviews(request.user)
+    # returns queryset of reviews
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = get_users_viewable_tickets(request.user)
+    # returns queryset of tickets
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    # combine and sort the two types of posts
+    posts = sorted(
+            chain(reviews, tickets),
+            key=lambda post: post.time_created,
+            reverse=True
+    )
+    context = {'title': ' - Flux',
+               'posts': posts}
+
+    return render(request, 'review/post.html', context)
+
+@login_required
+def followers(request):
+    if request.method == 'POST':
+        form = FollowerForm(request.POST)
+
+        if validate_form(form,request):
+            return redirect('abonnement')
+
+    else:
+        followed = UserFollows.objects.filter(user_id=request.user.id )
+        form = FollowerForm()
+
+    context = {'title': ' - Demander une critique',
+               'form': form,
+               'followed': followed,
+               'followers': followers
+               }
+
+    return render(request, 'review/abonnement.html', context)

@@ -1,0 +1,71 @@
+{% extends 'review/base.html' %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div id="navbarSupportedContent ">
+            <ul class="navbar-nav mr-auto ">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}">Flux</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'post' %}">Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-active" href="{% url 'abonnement' %}">Abonnements</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container container_flux ">
+        <div>
+            <div class="container center ">
+                <p class="center">Suivre d'autres utilisateurs</p>
+                <div class="bordure">
+                    <form method="post" action="{% url 'abonnement' %}">
+                        {% csrf_token %}
+                        <div>{{ form }}</div>
+                        <div class="input_right input_right-right"><input class=" btn btn-success" type="submit"
+                                                                          value="Envoyer"/></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <div class="container">
+                <p class="center">Abonnements</p>
+                {% if followed %}
+                    {% for follow in followed %}
+                        <div class="bordure">{{ follow.followed_user  }}</div>
+                    {% endfor %}
+                {% else %}
+                    <div class="bordure">Désolé pas d'abonnements pour le moment.</div>
+                {% endif %}
+            </div>
+
+
+            <div>
+                <div class="container">
+                    <p class="center">Abonnés</p>
+                    {% if followers %}
+                        {% for follower in followers %}
+                            <div class="bordure">{{ follower.followers.user }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="bordure">Désolé pas d'abonnés pour le moment.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

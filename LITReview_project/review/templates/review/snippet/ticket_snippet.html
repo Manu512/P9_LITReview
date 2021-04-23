@@ -1,7 +1,7 @@
 <div class="container_flux bordure"><span>{{ post.user }} a demandé une critique</span><span class="time_right"
 >{{ post.time_created }}</span>
         <div class="ticket_title">{{ post.title }}</div>
-    {% if not post.image.field.blank %}
-        <div class="ticket_img"><img src={{ post.image.url }}></div>
+    {% if  post.image %}
+        <div class="ticket_img"><img src={{ post.image }}></div>
     {% endif %}
 </div>
