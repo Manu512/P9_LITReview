@@ -5,11 +5,16 @@
     {% else %}
         <span>{{ post.user }} a publié une critique</span>
     {% endif %}
+
     <span class="time_right">{{ post.time_created }}</span>
     <div class="review_title">{{ post.headline }} - {{ post.rating }}</div>
     <div class="review_comment">{{ post.body }}</div>
     <div class="ticket_container bordure">
-        <div class="ticket_user">Ticket - {{ post.ticket.user }}</div>
+        {% if user == post.ticket.user %}
+            <div class="ticket_user">Ticket - Vous</div>
+        {% else %}
+            <div class="ticket_user">Ticket - {{ post.ticket.user }}</div>
+        {% endif %}
         <div class="ticket_title">{{ post.ticket.title }}</div>
         <div class="ticket_img"><img src={{ post.ticket.image }}></div>
     </div>
