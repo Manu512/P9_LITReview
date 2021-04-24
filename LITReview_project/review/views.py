@@ -141,8 +141,14 @@ def personal_post(request):
     return render(request, 'review/post.html', context)
 
 @login_required
-def followers(request):
-    if request.method == 'POST':
+def followers(request, delete_id=None):
+    if request.method == 'GET' and delete_id != None:
+        r = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id, followed_user_id=delete_id))
+        if r:
+            r.delete()
+            return redirect('abonnement')
+
+    elif request.method == 'POST':
         form = FollowerForm(request.POST)
 
         if validate_form(form,request):
@@ -150,6 +156,7 @@ def followers(request):
 
     else:
         followed = UserFollows.objects.filter(user_id=request.user.id )
+        followers = UserFollows.objects.filter(followed_user_id=request.user.id )
         form = FollowerForm()
 
     context = {'title': ' - Demander une critique',
@@ -158,4 +165,4 @@ def followers(request):
                'followers': followers
                }
 
-    return render(request, 'review/abonnement.html', context)
+    return render(request, 'review/follow.html', context)
