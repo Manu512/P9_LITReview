@@ -1,10 +1,16 @@
 {% load static %}
-<div class="container_flux bordure"><span>Vous avez publié une critique</span><span class="time_right">{{ post.time_created }}</span>
+<div class="container_flux bordure">
+    {% if user == post.user %}
+        <span>Vous avez a publié une critique</span>
+    {% else %}
+        <span>{{ post.user }} a publié une critique</span>
+    {% endif %}
+    <span class="time_right">{{ post.time_created }}</span>
     <div class="review_title">{{ post.headline }} - {{ post.rating }}</div>
     <div class="review_comment">{{ post.body }}</div>
     <div class="ticket_container bordure">
         <div class="ticket_user">Ticket - {{ post.ticket.user }}</div>
         <div class="ticket_title">{{ post.ticket.title }}</div>
-        <div class="ticket_img"><img src={% static 'review/img'|add:post.ticket.image.url %}></div>
+        <div class="ticket_img"><img src={{ post.ticket.image }}></div>
     </div>
 </div>
