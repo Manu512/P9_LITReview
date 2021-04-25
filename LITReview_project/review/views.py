@@ -114,7 +114,20 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
             insert.save()
             return redirect(index)
 
-    elif ticket_id and request.method == 'GET':  # Affichage formulaire pour répondre a un ticket par une critique
+    elif review_edit_id:  # Edition d'une critique
+        review_to_edit = get_object_or_404(Review, id=review_edit_id)
+        form_review = ReviewForm(instance=review_to_edit)
+        ticket_to_edit = get_object_or_404(Ticket, id=review_to_edit.ticket.pk)
+        form_ticket = TicketForm(instance=ticket_to_edit)
+
+        if request.method == 'POST':
+            form_review = ReviewForm(request.POST, instance=review_to_edit)
+            if form_review.is_valid():
+                form_review.save()
+                return redirect(index)
+
+    # Affichage formulaire pour répondre a un ticket par une critique
+    elif ticket_id and request.method == 'GET':
         to_answer = get_object_or_404(Ticket, id=ticket_id)
         form_ticket = TicketForm(instance=to_answer)
         form_review = ReviewForm()
@@ -173,7 +186,8 @@ def personal_post(request):
 @login_required
 def followers(request, delete_id=None):
     if request.method == 'GET' and delete_id is not None:
-        r = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id, followed_user_id=delete_id))
+        r = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id,
+                                                         followed_user_id=delete_id))
         if r:
             r.delete()
             return redirect('abonnement')
