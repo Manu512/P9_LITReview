@@ -60,17 +60,30 @@ def validate_form(form, request):
     return r
 
 @login_required
-def ticket(request, ticket_id=None):
-    if ticket_id and request.method == 'GET':
-        res =  get_object_or_404(Ticket, id=ticket_id)
-        form = TicketForm(res)
-    elif request.method == 'POST':
-        form = TicketForm(request.POST)
+def ticket(request, ticket_edit_id=None, ticket_delete_id=None):
+    """
+        Fonction de gestion des demande de critiques appelé Ticket
+    """
+    if ticket_delete_id and request.method == 'GET': # Suppression d'un ticket
+        to_delete =  get_object_or_404(Ticket, id=ticket_delete_id)
+        to_delete.delete()
+        return redirect(index)
+    elif ticket_edit_id: # Edition d'un ticket
+        to_edit = get_object_or_404(Ticket, id=ticket_edit_id)
+        form = TicketForm(instance=to_edit)
+        if request.method == 'POST':
+            form = TicketForm(request.POST, request.FILES, instance=to_edit)
+
+            if validate_form(form,request):
+                return redirect(index)
+
+    elif request.method == 'POST': # Création d'un ticket
+        form = TicketForm(request.POST, request.FILES)
 
         if validate_form(form,request):
             return redirect(index)
 
-    else:
+    else: # Affichage d'un formulaire vierge pour créer un ticket
         form = TicketForm()
 
     context = {'title': ' - Demander une critique',
@@ -80,20 +93,35 @@ def ticket(request, ticket_id=None):
 
 
 @login_required
-def review(request, review_id=None):
-    if review_id and request.method == 'GET':
-        res =  get_object_or_404(Review, id=review_id)
+def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
+    """
+        Fonction de gestion des Critiques
+    """
+    if review_delete_id and request.method == 'GET': # Suppression d'une critique
+        to_delete =  get_object_or_404(Review, id=review_delete_id)
+        to_delete.delete()
+        return redirect(index)
 
-    elif request.method == 'POST':
+    elif ticket_id and request.method == 'POST': # Création d'une critique en réponse a un ticket
         form_Review = ReviewForm(request.POST)
-        form_Ticket = TicketForm(request.POST)
 
-        if validate_form(form_Ticket, request):
-            if validate_form(form_Review, request):
-                return redirect(index)
-    else:
+        if form_Review.is_valid():
+            insert = form_Review.save(commit=False)
+            insert.ticket_id = ticket_id
+            insert.user = request.user
+            insert.save()
+            return redirect(index)
+
+    elif ticket_id and request.method == 'GET': # Affichage formulaire pour répondre a un ticket par une critique
+        to_answer = get_object_or_404(Ticket, id=ticket_id)
+        form_Ticket = TicketForm(instance=to_answer)
         form_Review = ReviewForm()
+
+    else:
         form_Ticket = TicketForm()
+        form_Review = ReviewForm()
+
+
 
     context = {'title': ' - Créer une critique',
                'form_Review': form_Review,

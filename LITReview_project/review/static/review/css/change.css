@@ -63,6 +63,8 @@ td.last {
   display: block;
   margin-right: 1em;
   direction: rtl;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 .input_right-right {
   text-align: right;

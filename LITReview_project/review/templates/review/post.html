@@ -4,40 +4,24 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block navbar %}
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div id="navbarSupportedContent ">
-                <ul class="navbar-nav mr-auto ">
-                  <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'index'%}">Flux</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link nav-link-active" href="{% url 'post'%}">Posts</a>
-                  </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'abonnement'%}">Abonnements</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout'%}">Se déconnecter</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+    {% include 'review/snippet/nav.html' %}
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row align-items-start">
-                <h2 class="text-center ">Bienvenue {{ user.username }}.</h2>
+            <h2 class="text-center ">Bienvenue {{ user.username }}.</h2>
         </div>
         <div class="row align-items-start">
-            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'ticket'%}">Demander une
+            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'ticket' %}">Demander une
                 critique</a></div>
-            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'review'%}">Créer une critique</a></div>
+            <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'review' %}">Créer une critique</a>
+            </div>
         </div>
         {% for post in posts %}
             {% if post.content_type == 'TICKET' %}
                 {% include 'review/snippet/ticket_snippet.html' %}
-            {%  elif post.content_type == 'REVIEW' %}
+            {% elif post.content_type == 'REVIEW' %}
                 {% include 'review/snippet/review_snippet.html' %}
             {% endif %}
         {% endfor %}

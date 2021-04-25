@@ -20,7 +20,7 @@ class TimeStampModel(UserModel):
 class Ticket(TimeStampModel):
     title = models.CharField('Titre', max_length=128)
     description = models.TextField(max_length=2048, blank=True)
-    image = models.ImageField(upload_to='review/img/', null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
     def __str__(self):
         return "{} by {}".format(self.title, self.user)
 

@@ -16,6 +16,12 @@
             <div class="ticket_user">Ticket - {{ post.ticket.user }}</div>
         {% endif %}
         <div class="ticket_title">{{ post.ticket.title }}</div>
-        <div class="ticket_img"><img src={{ post.ticket.image }}></div>
+        <div class="ticket_img"><img src={{ post.ticket.image.url }}></div>
     </div>
+        {% if user == post.user and request.path != "/" %}
+        <div class="input_right">
+            <span><a class="btn btn-danger" href="{% url 'delete_review' post.id %}">Supprimer</a></span>
+            <span><a class="btn btn-primary" href="{% url 'edit_review' post.id %}">Modifier</a> </span>
+        </div>
+    {% endif %}
 </div>
