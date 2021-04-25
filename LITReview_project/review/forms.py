@@ -54,13 +54,15 @@ class ReviewForm(ModelForm):
                 "body":     "Commentaire",
         }
         widgets = {
-                "rating": RadioSelect(choices=((0,"- 0"),(1,"- 1"),(2,"- 2"),(3,"- 3"),(4,"- 4"),(5,"- 5"))),
-                "body": Textarea()
+                "rating": RadioSelect(
+                    choices=((0, "- 0"), (1, "- 1"), (2, "- 2"), (3, "- 3"), (4, "- 4"), (5, "- 5"))),
+                "body":   Textarea()
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['rating'].widget.attrs.update({'class': 'special'})
+
 
 class FollowerForm(ModelForm):
     class Meta:

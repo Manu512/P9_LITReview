@@ -7,7 +7,7 @@
     {% endif %}
 
     <span class="time_right">{{ post.time_created }}</span>
-    <div class="review_title">{{ post.headline }} - {{ post.rating }}</div>
+    <div class="review_title">{{ post.headline }} - <span class="stars">{{ post.rating }}</span></div>
     <div class="review_comment">{{ post.body }}</div>
     <div class="ticket_container bordure">
         {% if user == post.ticket.user %}
