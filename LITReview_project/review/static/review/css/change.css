@@ -10,6 +10,12 @@ textarea {
   text-align: left;
 }
 
+.stars {
+  color: greenyellow;
+  font-size: 1.5rem;
+  text-shadow: 2px 2px black;
+}
+
 .center {
   text-align: center;
 }
