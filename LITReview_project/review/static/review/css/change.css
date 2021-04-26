@@ -16,6 +16,12 @@ textarea {
   text-shadow: 2px 2px black;
 }
 
+div.ticket_img > img {
+  margin-left: 10px;
+  max-width: 200px;
+  max-height: 200px;
+}
+
 .center {
   text-align: center;
 }
@@ -93,9 +99,6 @@ td.last {
 
 .ticket_container {
   margin: 10px 10px 0 10px;
-}
-.ticket_img {
-  margin-left: 10px;
 }
 
 .time_right {

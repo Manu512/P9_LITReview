@@ -9,15 +9,7 @@
     <span class="time_right">{{ post.time_created }}</span>
     <div class="review_title">{{ post.headline }} - <span class="stars">{{ post.rating }}</span></div>
     <div class="review_comment">{{ post.body }}</div>
-    <div class="ticket_container bordure">
-        {% if user == post.ticket.user %}
-            <div class="ticket_user">Ticket - Vous</div>
-        {% else %}
-            <div class="ticket_user">Ticket - {{ post.ticket.user }}</div>
-        {% endif %}
-        <div class="ticket_title">{{ post.ticket.title }}</div>
-        <div class="ticket_img"><img src={{ post.ticket.image.url }}></div>
-    </div>
+    {% include 'review/snippet/ticket_snippet.html' with post=post.ticket reply=1 %}
         {% if user == post.user and request.path != "/" %}
         <div class="input_right">
             <span><a class="btn btn-danger" href="{% url 'delete_review' post.id %}">Supprimer</a></span>

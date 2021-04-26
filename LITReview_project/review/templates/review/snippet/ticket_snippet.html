@@ -10,16 +10,19 @@
         <div class="ticket_img"><img src={{ post.image.url }}></div>
     {% endif %}
 
-    {% if user == post.user %}
-        {% if request.path != "/" %}
-        <div class="input_right">
-            <span><a class="btn btn-danger" href="{% url 'ticket_delete' post.id %}">Supprimer</a></span>
-            <span><a class="btn btn-primary" href="{% url 'ticket_edit' post.id %}">Modifier</a> </span>
-        </div>
+    {% if reply != 1 %}
+
+        {% if user == post.user  %}
+            {% if request.path != "/" %}
+            <div class="input_right">
+                <span><a class="btn btn-danger" href="{% url 'ticket_delete' post.id %}">Supprimer</a></span>
+                <span><a class="btn btn-primary" href="{% url 'ticket_edit' post.id %}">Modifier</a> </span>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="input_right">
+                <span><a class="btn btn-success" href="{% url 'reply_ticket' post.id %}">Créer une critique</a></span>
+            </div>
         {% endif %}
-    {% else %}
-        <div class="input_right">
-            <span><a class="btn btn-success" href="{% url 'reply_ticket' post.id %}">Créer une critique</a></span>
-        </div>
     {% endif %}
 </div>

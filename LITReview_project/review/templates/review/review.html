@@ -7,7 +7,7 @@ Crée une critique
 {% endblock %}
 
 {% block content %}
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="container_flux">
             <div class="text-center">Créer une critique</div>
