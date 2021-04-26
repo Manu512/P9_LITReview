@@ -10,11 +10,11 @@
                 <a class="btn btn-primary" href={% url 'register' %}>S'inscrire</a>
                 {% comment %}Si message par exemple validation d'inscription{% endcomment %}
                 {% if messages %}
-                    <ul>
+                    <div class="container_flux">
                     {% for message in messages %}
-                        <li>{{ message }}</li>
+                        <p>{{ message }}</p>
                     {% endfor %}
-                    </ul>
+                    </div>
                 {% endif %}
             </div>
             <div class="col text-center align-content-center">

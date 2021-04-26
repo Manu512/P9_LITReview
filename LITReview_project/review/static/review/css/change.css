@@ -114,6 +114,12 @@ td.last {
   box-shadow: 3px 0px 2px gray;
 }
 
+.errorlist {
+  display: block;
+  list-style: none;
+  text-align: center;
+}
+
 ul#id_rating {
   list-style-type: none;
 }

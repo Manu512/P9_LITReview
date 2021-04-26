@@ -135,16 +135,25 @@ td{
     box-shadow: 3px 0px 2px gray;
   }
 
-ul#id_rating {
-  list-style-type: none;
-
-  >li {
-    display: inline-block;
-    text-align: left;
-    margin-left: 2px;
-    padding-left: 5rem;
+.errorlist {
+    display: block;
+    list-style: none;
+    text-align: center;
   }
-  >li:first-child {
-    padding-left: 0;
+
+
+ul{
+  &#id_rating {
+    list-style-type: none;
+
+    >li {
+      display: inline-block;
+      text-align: left;
+      margin-left: 2px;
+      padding-left: 5rem;
+    }
+    >li:first-child {
+      padding-left: 0;
+    }
   }
 }

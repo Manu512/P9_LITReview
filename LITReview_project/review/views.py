@@ -50,10 +50,12 @@ def index(request):
     return render(request, 'review/index.html', context)
 
 
-def validate_form(form, request):
+def validate_form(form, request, ticket_id=None):
     r = False
     if form.is_valid:
         prepare_save = form.save(commit=False)
+        if ticket_id:
+            prepare_save.ticket_id = ticket_id
         prepare_save.user = request.user
         prepare_save.save()
         r = True
@@ -71,24 +73,24 @@ def ticket(request, ticket_edit_id=None, ticket_delete_id=None):
         to_delete.delete()
         return redirect(index)
     elif ticket_edit_id:  # Edition d'un ticket
+        title_html = " - Edition d'une demande de critique"
         to_edit = get_object_or_404(Ticket, id=ticket_edit_id)
         form = TicketForm(instance=to_edit)
         if request.method == 'POST':
             form = TicketForm(request.POST, request.FILES, instance=to_edit)
-
-            if validate_form(form, request):
-                return redirect(index)
+            validate_form(form, request)
+            return redirect(index)
 
     elif request.method == 'POST':  # Création d'un ticket
         form = TicketForm(request.POST, request.FILES)
-
-        if validate_form(form, request):
-            return redirect(index)
+        validate_form(form, request)
+        return redirect(index)
 
     else:  # Affichage d'un formulaire vierge pour créer un ticket
+        title_html = ' - Demander une critique'
         form = TicketForm()
 
-    context = {'title': ' - Demander une critique',
+    context = {'title': title_html,
                'form':  form
                }
     return render(request, 'review/ticket.html', context)
@@ -101,19 +103,12 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
     """
     title_html = ' - Créer une critique'
     if review_delete_id and request.method == 'GET':  # Suppression d'une critique
-        to_delete = get_object_or_404(Review, id=review_delete_id)
-        to_delete.delete()
+        get_object_or_404(Review, id=review_delete_id).delete()
         return redirect(index)
 
     elif ticket_id and request.method == 'POST':  # Création d'une critique en réponse a un ticket
         form_review = ReviewForm(request.POST)
-
-        if form_review.is_valid():
-            insert = form_review.save(commit=False)
-            insert.ticket_id = ticket_id
-            insert.user = request.user
-            insert.save()
-
+        validate_form(form_review, request, ticket_id)
         return redirect(index)
 
     elif review_edit_id:  # Edition d'une critique
@@ -127,8 +122,7 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
             form_ticket = TicketForm(request.POST, request.FILES, instance=ticket_to_edit)
             form_review = ReviewForm(request.POST, instance=review_to_edit)
             validate_form(form_ticket, request)
-            if form_review.is_valid():
-                form_review.save()
+            validate_form(form_review, request)
             return redirect(index)
 
     # Affichage formulaire pour répondre a un ticket par une critique
@@ -142,12 +136,8 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
         form_ticket = TicketForm(request.POST, request.FILES)
 
         if validate_form(form_ticket, request):
-            form_review = ReviewForm(request.POST)
-            insert = form_review.save(commit=False)
-            insert.ticket_id = Ticket.objects.get(title=request.POST["title"], user_id=request.user).id
-            insert.user = request.user
-            insert.save()
-
+            validate_form(ReviewForm, request, Ticket.objects.get(title=request.POST["title"],
+                                                                  user_id=request.user).id)
         return redirect(index)
 
     else:
@@ -164,16 +154,20 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
 def register(request):
     if request.method == 'POST':
         form = Register(request.POST)
-        if form.is_valid():
-            form.save()
-            user_name = form.cleaned_data.get('username')
-            messages.success(request, "L'utilisateur " + user_name + ' a été enregistré')
-            return redirect('login')
+
+        if not form.errors:
+            if validate_form(form, request):
+                user_name = form.cleaned_data.get('username')
+                messages.success(request, "L'utilisateur " + user_name + ' a été enregistré')
+                return redirect('login')
+        # else:
+        #     # messages.error(request, ("Le nom d'utilistateur est déja pris","Les mots de passes ne sont pas identiques"))
+        #     return redirect('register')
     else:
         form = Register()
 
     context = {
-            'title': ""' - Inscription'"",
+            'title': " - Inscription",
             'form':  form
     }
     return render(request, 'review/register.html', context)
@@ -206,22 +200,18 @@ def followers(request, delete_id=None):
     if request.method == 'GET' and delete_id is not None:
         r = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id,
                                                          followed_user_id=delete_id))
-        if r:
-            r.delete()
-            return redirect('abonnement')
-
+        r.delete()
+        return redirect('abonnement')
     elif request.method == 'POST':
         form = FollowerForm(request.POST)
-
-        if validate_form(form, request):
-            return redirect('abonnement')
-
+        validate_form(form, request)
+        return redirect('abonnement')
     else:
         followed = UserFollows.objects.filter(user_id=request.user.id)
         followers = UserFollows.objects.filter(followed_user_id=request.user.id)
         form = FollowerForm()
 
-    context = {'title':     ' - Demander une critique',
+    context = {'title':     ' - Gestion des abonnements',
                'form':      form,
                'followed':  followed,
                'followers': followers

@@ -4,29 +4,27 @@
 
 {% block content %}
     <div class="">
-        <form method="post" action="{% url 'register' %}">
+        <form method="post">
             {% csrf_token %}
             <div class="fw-bold display-6 text-center">Inscrivez-vous</div>
             <div class="container text-center col-auto">
                 <p>{{ form.username }}</p>
                 <p>{{ form.password1 }}</p>
                 <p>{{ form.password2 }}</p>
-                <div class="align-content-end float-end">
+                <div class="input_right">
+                    <input class="btn btn-primary" type="submit" value="S'inscrire"/>
                     <a class="btn btn-secondary" href="{% url 'login' %}">Retourner</a>
-                        <input class="btn btn-primary" type="submit" value="S'inscrire"/>
-                    </div>
+
                 </div>
             </div>
 
-            {% if form.errors %}
-                <div class="container ">
-                    {% for value in form.errors.values %}
-                        {{ value }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-
         </form>
-
+        {% if form.errors %}
+            <div class="container_flux center">
+                {% for key, value in form.errors.items %}
+                    {{ value }}
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
