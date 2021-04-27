@@ -17,6 +17,7 @@
                 critique</a></div>
             <div class="col-6 text-center"><a class="btn btn-primary" href="{% url 'review'%}">Créer une critique</a></div>
         </div>
+    {% if posts %}
         {% for post in posts %}
             {% if post.content_type == 'TICKET' %}
                 {% include 'review/snippet/ticket_snippet.html' %}
@@ -24,5 +25,11 @@
                 {% include 'review/snippet/review_snippet.html' %}
             {% endif %}
         {% endfor %}
+    {% else %}
+        <div class="container container_flux bordure center">Veuillez suivre au minimum un utilisateur ou poster une
+            demande/critique
+            pour
+            avoir un flux.</div>
+    {% endif %}
     </div>
 {% endblock %}

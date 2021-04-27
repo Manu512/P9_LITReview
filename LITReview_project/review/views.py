@@ -20,7 +20,7 @@ class Login(LoginView):
     extra_context = {'title': ' - Accueil'}
 
 
-def get_users_viewable_reviews(user):
+def get_users_viewable_reviews(user: list):
     return Review.objects.filter(user__in=user)
 
 
@@ -31,7 +31,13 @@ def get_users_viewable_tickets(user):
 @login_required
 def index(request):
     to_show = [request.user.pk]
-    to_show = to_show + list(UserFollows.objects.filter(user=request.user.id).values_list('followed_user_id', flat=True))
+    if request.path =='/':
+        title = ' - Flux '
+        to_show = to_show + list(
+            UserFollows.objects.filter(user=request.user.id).values_list('followed_user_id', flat=True))
+
+    elif request.path =='/post/':
+        title = ' - Posts Personnel'
 
     reviews = get_users_viewable_reviews(to_show)
     # returns queryset of reviews
@@ -47,7 +53,7 @@ def index(request):
             key=lambda post: post.time_created,
             reverse=True
     )
-    context = {'title': ' - Flux',
+    context = {'title': title,
                'posts': posts}
 
     return render(request, 'review/index.html', context)
@@ -55,9 +61,7 @@ def index(request):
 
 def validate_form(form, request, ticket_id=None):
     valid = False
-    print(form)
     if form.is_valid():
-
         prepare_save = form.save(commit=False)
         if ticket_id:
             prepare_save.ticket_id = ticket_id
@@ -150,7 +154,7 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
         form_review = ReviewForm()
 
     context = {'title':       title_html,
-               'form_review':  form_review,
+               'form_review': form_review,
                'form_ticket': form_ticket
                }
     return render(request, 'review/review.html', context)
@@ -177,33 +181,10 @@ def register(request):
 
 
 @login_required
-def personal_post(request):
-    to_show = [request.user.pk]
-    reviews = get_users_viewable_reviews(to_show)
-    # returns queryset of reviews
-    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
-
-    tickets = get_users_viewable_tickets(to_show)
-    # returns queryset of tickets
-    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
-
-    # combine and sort the two types of posts
-    posts = sorted(
-            chain(reviews, tickets),
-            key=lambda post: post.time_created,
-            reverse=True
-    )
-    context = {'title': ' - Flux',
-               'posts': posts}
-
-    return render(request, 'review/post.html', context)
-
-
-@login_required
 def followers(request, delete_id=None):
     if request.method == 'GET' and delete_id is not None:
         obj = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id,
-                                                         followed_user_id=delete_id))
+                                                           followed_user_id=delete_id))
         obj.delete()
         return redirect('abonnement')
     elif request.method == 'POST':
