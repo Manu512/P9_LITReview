@@ -31,12 +31,12 @@ def get_users_viewable_tickets(user):
 @login_required
 def index(request):
     to_show = [request.user.pk]
-    if request.path =='/':
+    if request.path == '/':
         title = ' - Flux '
         to_show = to_show + list(
             UserFollows.objects.filter(user=request.user.id).values_list('followed_user_id', flat=True))
 
-    elif request.path =='/post/':
+    elif request.path == '/post/':
         title = ' - Posts Personnel'
 
     reviews = get_users_viewable_reviews(to_show)
