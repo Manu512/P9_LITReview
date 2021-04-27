@@ -21,20 +21,23 @@ class Login(LoginView):
 
 
 def get_users_viewable_reviews(user):
-    return Review.objects.filter(user=user)
+    return Review.objects.filter(user__in=user)
 
 
 def get_users_viewable_tickets(user):
-    return Ticket.objects.filter(user=user)
+    return Ticket.objects.filter(user__in=user)
 
 
 @login_required
 def index(request):
-    reviews = Review.objects.all()  # get_users_viewable_reviews()
+    to_show = [request.user.pk]
+    to_show = to_show + list(UserFollows.objects.filter(user=request.user.id).values_list('followed_user_id', flat=True))
+
+    reviews = get_users_viewable_reviews(to_show)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = Ticket.objects.all()  # get_users_viewable_tickets()
+    tickets = get_users_viewable_tickets(to_show)
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
@@ -51,16 +54,18 @@ def index(request):
 
 
 def validate_form(form, request, ticket_id=None):
-    r = False
-    if form.is_valid:
+    valid = False
+    print(form)
+    if form.is_valid():
+
         prepare_save = form.save(commit=False)
         if ticket_id:
             prepare_save.ticket_id = ticket_id
         prepare_save.user = request.user
         prepare_save.save()
-        r = True
+        valid = True
 
-    return r
+    return valid
 
 
 @login_required
@@ -134,10 +139,10 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
 
     elif request.method == 'POST':
         form_ticket = TicketForm(request.POST, request.FILES)
-
+        form_review = ReviewForm(request.POST)
         if validate_form(form_ticket, request):
-            validate_form(ReviewForm, request, Ticket.objects.get(title=request.POST["title"],
-                                                                  user_id=request.user).id)
+            validate_form(form_review, request, Ticket.objects.get(title=request.POST["title"],
+                                                                   user_id=request.user).id)
         return redirect(index)
 
     else:
@@ -160,9 +165,7 @@ def register(request):
                 user_name = form.cleaned_data.get('username')
                 messages.success(request, "L'utilisateur " + user_name + ' a été enregistré')
                 return redirect('login')
-        # else:
-        #     # messages.error(request, ("Le nom d'utilistateur est déja pris","Les mots de passes ne sont pas identiques"))
-        #     return redirect('register')
+
     else:
         form = Register()
 
@@ -175,11 +178,12 @@ def register(request):
 
 @login_required
 def personal_post(request):
-    reviews = get_users_viewable_reviews(request.user)
+    to_show = [request.user.pk]
+    reviews = get_users_viewable_reviews(to_show)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = get_users_viewable_tickets(request.user)
+    tickets = get_users_viewable_tickets(to_show)
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
@@ -198,9 +202,9 @@ def personal_post(request):
 @login_required
 def followers(request, delete_id=None):
     if request.method == 'GET' and delete_id is not None:
-        r = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id,
+        obj = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id,
                                                          followed_user_id=delete_id))
-        r.delete()
+        obj.delete()
         return redirect('abonnement')
     elif request.method == 'POST':
         form = FollowerForm(request.POST)
