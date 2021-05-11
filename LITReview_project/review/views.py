@@ -54,7 +54,10 @@ def index(request):
     elif request.path == '/post/':
         title = ' - Posts Personnel'
 
+    ticket_with_reply = []
     reviews = get_users_viewable_reviews(to_show)
+    for response in reviews:
+        ticket_with_reply.append(response.ticket)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
@@ -69,7 +72,9 @@ def index(request):
             reverse=True
     )
     context = {'title': title,
-               'posts': posts}
+               'posts': posts,
+               'ticket_with_reply': ticket_with_reply
+               }
 
     return render(request, 'review/index.html', context)
 

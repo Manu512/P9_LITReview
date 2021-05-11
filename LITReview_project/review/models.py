@@ -43,7 +43,7 @@ class Review(TimeStampModel):
     """
     Définition de l'objet Critique (Review)
     """
-    ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(to=Ticket, related_name='ticket', on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     # valide que la note doit être comprise entre 0 et 5
     headline = models.CharField(max_length=128)
