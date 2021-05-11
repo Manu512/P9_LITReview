@@ -1,3 +1,4 @@
+"""forms.py"""
 from django.contrib.auth.models import User
 from django.forms import RadioSelect, Textarea
 from django.forms.models import ModelForm
@@ -8,6 +9,9 @@ from .models import Review, Ticket, UserFollows
 
 
 class Register(UserCreationForm):
+    """
+    Formulaire d'enregistrement de l'utilisateur hérite de UserCreationForm.
+    """
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
@@ -23,6 +27,9 @@ class Register(UserCreationForm):
 
 
 class Connect(AuthenticationForm):
+    """
+    Formulaire d'authentification de l'utilisateur hérite de AuthenticationForm.
+    """
     class Meta:
         model = User
         fields = ['username', 'password']
@@ -34,6 +41,9 @@ class Connect(AuthenticationForm):
 
 
 class TicketForm(ModelForm):
+    """
+    Définition du formulaire du ticket (TICKET) qui hérite de l'objet ModelForm.
+    """
     class Meta:
         model = Ticket
         fields = ["title", "description", "image"]
@@ -45,6 +55,9 @@ class TicketForm(ModelForm):
 
 
 class ReviewForm(ModelForm):
+    """
+    Définition du formulaire des critiques (REVIEW) qui hérite de l'objet ModelForm.
+    """
     class Meta:
         model = Review
         fields = ["headline", "rating", "body"]
@@ -65,6 +78,9 @@ class ReviewForm(ModelForm):
 
 
 class FollowerForm(ModelForm):
+    """
+    Définition du formulaire des abonnements (Followers) suivi des utilisateurs qui hérite de l'objet ModelForm.
+    """
     class Meta:
         model = UserFollows
         fields = ["followed_user"]

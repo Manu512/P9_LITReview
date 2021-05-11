@@ -1,3 +1,6 @@
+/**
+   * Transforme les notes des critiques au format numérique entier en étoiles.
+*/
 function NumberToStar() {
 
     let stars = document.getElementsByClassName("stars");

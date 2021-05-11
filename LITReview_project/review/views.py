@@ -1,3 +1,4 @@
+""" views.py """
 from itertools import chain
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -21,15 +22,29 @@ class Login(LoginView):
 
 
 def get_users_viewable_reviews(user: list):
+    """
+    Fonction qui récupère et affiche les critiques d'une liste utilisateurs (qui sont suivis)
+    :param user: liste des utilisateurs suivi.
+    :return: Object Review
+    """
     return Review.objects.filter(user__in=user)
 
 
 def get_users_viewable_tickets(user):
+    """
+    Fonction qui récupère et affiche les tickets d'une liste utilisateurs (qui sont suivis)
+    :param user: liste des utilisateurs suivi.
+    :return: Object Ticket
+    """
     return Ticket.objects.filter(user__in=user)
 
 
 @login_required
 def index(request):
+    """
+    Fonction qui affiche/génère la page index à condition d'etre authentifié
+    :return: Template index
+    """
     to_show = [request.user.pk]
     if request.path == '/':
         title = ' - Flux '
@@ -60,6 +75,13 @@ def index(request):
 
 
 def validate_form(form, request, ticket_id=None):
+    """
+    Fonction de contrôle et de validation des formulaires et gestion de critiques lié a un ticket.
+    :param form: obj Form (Formulaire)
+    :param request: obj request
+    :param ticket_id: si défini obj int qui contient l'id du ticket à lié a la critique.
+    :return: Bool True si Valid
+    """
     valid = False
     if form.is_valid():
         prepare_save = form.save(commit=False)
@@ -68,14 +90,17 @@ def validate_form(form, request, ticket_id=None):
         prepare_save.user = request.user
         prepare_save.save()
         valid = True
-
     return valid
 
 
 @login_required
 def ticket(request, ticket_edit_id=None, ticket_delete_id=None):
     """
-        Fonction de gestion des demande de critiques appelé Ticket
+        Fonction de gestion et d'affichage des demande de critiques appelé Ticket
+        :param request:
+        :param ticket_edit_id: Si défini id du ticket à éditer.
+        :param ticket_delete_id: Si défini id du ticket à supprimer.
+        :return: Informations a afficher dans le template ticket.html
     """
     if ticket_delete_id and request.method == 'GET':  # Suppression d'un ticket
         to_delete = get_object_or_404(Ticket, id=ticket_delete_id)
@@ -108,7 +133,12 @@ def ticket(request, ticket_edit_id=None, ticket_delete_id=None):
 @login_required
 def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
     """
-        Fonction de gestion des Critiques
+        Fonction de gestion et d'affichage des Critiques
+        :param request:
+        :param ticket_id: défini lorsque l'ont crée une critique en réponse à un ticket précis.
+        :param review_edit_id: si défini on modifie la critique défini par l'id.
+        :param review_delete_id: si défini on supprime la critique défini par l'id.
+        :return: Informations à afficher dans le template review.html
     """
     title_html = ' - Créer une critique'
     if review_delete_id and request.method == 'GET':  # Suppression d'une critique
@@ -161,6 +191,11 @@ def review(request, ticket_id=None, review_edit_id=None, review_delete_id=None):
 
 
 def register(request):
+    """
+    Fonction qui permet de s'inscrire sur le site de critique
+    :param request:
+    :return: Informations à afficher dans le template review.html
+    """
     if request.method == 'POST':
         form = Register(request.POST)
 
@@ -182,6 +217,12 @@ def register(request):
 
 @login_required
 def followers(request, delete_id=None):
+    """
+    Fonction qui gere la page d'abonnement.
+    :param request:
+    :param delete_id: si fourni, supprime le fait de suivre un utilisateur défini selon l'id de la table User.
+    :return: retourne le template follow avec les données à afficher.
+    """
     if request.method == 'GET' and delete_id is not None:
         obj = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id,
                                                            followed_user_id=delete_id))
