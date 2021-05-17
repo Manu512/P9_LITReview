@@ -21,7 +21,7 @@ class Login(LoginView):
     extra_context = {'title': ' - Accueil'}
 
 
-def get_users_viewable_reviews(user: list):
+def get_users_viewable_reviews(user):
     """
     Fonction qui récupère et affiche les critiques d'une liste utilisateurs (qui sont suivis)
     :param user: liste des utilisateurs suivi.
@@ -44,6 +44,9 @@ def index(request):
     """
     Fonction qui affiche/génère la page index à condition d'etre authentifié
     :return: Template index
+        context['title'] : Le titre de la page
+        context['posts'] : Les différents reviews et tickets
+        context['ticket_with_reply' : Listes des tickets avec Reply.
     """
     to_show = [request.user.pk]
     if request.path == '/':
@@ -57,7 +60,7 @@ def index(request):
     ticket_with_reply = []
     reviews = get_users_viewable_reviews(to_show)
     for response in reviews:
-        ticket_with_reply.append(response.ticket)
+        ticket_with_reply.append(response.ticket_id)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 

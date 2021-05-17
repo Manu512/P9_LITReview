@@ -11,20 +11,21 @@
     {% endif %}
 
     {% if reply != 1 %}
-
-        {% if user == post.user  %}
+        {# si le ticket n'a pas eu de réponse (critique). #}
+        {% if user == post.user %}
             {% if request.path != "/" %}
-            <div class="input_right">
-                <span><a class="btn btn-danger" href="{% url 'ticket_delete' post.id %}">Supprimer</a></span>
-                <span><a class="btn btn-primary" href="{% url 'ticket_edit' post.id %}">Modifier</a> </span>
-            </div>
-            {% endif %}
-        {% else %}
-            {% if post.id in ticket_with_reply.id %}
                 <div class="input_right">
-                    <span><a class="btn btn-success" href="{% url 'reply_ticket' post.id %}">Créer une critique</a></span>
+                    <span><a class="btn btn-danger" href="{% url 'ticket_delete' post.id %}">Supprimer</a></span>
+                    <span><a class="btn btn-primary" href="{% url 'ticket_edit' post.id %}">Modifier</a> </span>
                 </div>
             {% endif %}
         {% endif %}
+    {% endif %}
+    {% if post.id not in ticket_with_reply %}
+        {#                si le ticket a eu une reponse, il faut empecher de pouvoir y repondre à nouveau.#}
+        <div class="input_right">
+            <span><a class="btn btn-success" href="{% url 'reply_ticket' post.id %}">Créer une critique</a></span>
+        </div>
+
     {% endif %}
 </div>

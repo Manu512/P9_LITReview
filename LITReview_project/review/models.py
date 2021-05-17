@@ -45,7 +45,7 @@ class Review(TimeStampModel):
     """
     ticket = models.ForeignKey(to=Ticket, related_name='ticket', on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
-    # valide que la note doit être comprise entre 0 et 5
+    # valide que si la note doit être comprise entre 0 et 5
     headline = models.CharField(max_length=128)
     body = models.CharField(max_length=8192, blank=True)
 

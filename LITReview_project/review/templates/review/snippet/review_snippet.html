@@ -11,6 +11,7 @@
     <div class="review_comment">{{ post.body }}</div>
     {% include 'review/snippet/ticket_snippet.html' with post=post.ticket reply=1 %}
         {% if user == post.user and request.path != "/" %}
+{#            On propose la suppression et la modification uniquement a l'utilisateur en cours et dans la rubrique Post#}
         <div class="input_right">
             <span><a class="btn btn-danger" href="{% url 'delete_review' post.id %}">Supprimer</a></span>
             <span><a class="btn btn-primary" href="{% url 'edit_review' post.id %}">Modifier</a> </span>
