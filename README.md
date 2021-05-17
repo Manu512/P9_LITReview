@@ -54,15 +54,15 @@ A ce moment, page sera accessible à l'URL [http://127.0.0.1:8000/](http://127.0
 
 ### Listes des utilisateurs de test :
 
-emmanuel
-estelle
-bernard
-jean8597
-sarahj
-arnaud
-severine123
-raphael
-eliane
+emmanuel  
+estelle  
+bernard  
+jean8597  
+sarahj  
+arnaud  
+severine123  
+raphael   
+eliane  
 
 > Le mot de passe est : test
 
