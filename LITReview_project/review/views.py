@@ -1,6 +1,7 @@
 """ views.py """
 from itertools import chain
 
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -231,6 +232,7 @@ def followers(request, delete_id=None):
     :param delete_id: si fourni, supprime le fait de suivre un utilisateur défini selon l'id de la table User.
     :return: retourne le template follow avec les données à afficher.
     """
+
     if request.method == 'GET' and delete_id is not None:
         obj = get_object_or_404(UserFollows.objects.filter(user_id=request.user.id,
                                                            followed_user_id=delete_id))
@@ -243,10 +245,12 @@ def followers(request, delete_id=None):
     else:
         followed = UserFollows.objects.filter(user_id=request.user.id)
         followers = UserFollows.objects.filter(followed_user_id=request.user.id)
-        form = FollowerForm()
+        followed_id = UserFollows.objects.filter(user_id=request.user.id).values("followed_user")
+        follow_list = User.objects.exclude(id__in=followed_id)
+        follow_list = follow_list.exclude(id=request.user.id)
 
     context = {'title':     ' - Gestion des abonnements',
-               'form':      form,
+               'follow_list':      follow_list,
                'followed':  followed,
                'followers': followers
                }
